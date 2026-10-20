@@ -4,6 +4,7 @@ Start with the README in the repository root for setup and demo accounts.
 
 | # | Document | Read it when |
 |---|---|---|
+| 00 | [Project plan](00-project-plan.md) | You need the whole plan in one place: market, users, AI, UX, stack, architecture, API, compliance, money, roadmap, backlog |
 | 01 | [Market research](01-market-research.md) | You need the sourced market numbers, assumptions and competitor context |
 | 02 | [Architecture](02-architecture.md) | You need the system design, ERD, auth flow or threat model |
 | 03 | [API specification](03-api-spec.md) | You are integrating with or testing the REST API |

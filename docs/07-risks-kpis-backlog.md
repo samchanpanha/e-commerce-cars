@@ -96,40 +96,41 @@ Scale: likelihood (L) and impact (I) 1–5; score = L × I. Owner is a role, not
 ## 3. Ordered backlog
 
 Priority: **P0** = required before public launch; **P1** = required for a credible paid pilot; **P2** = valuable after validation. Effort: S (<1 day), M (1–3 days), L (1–2 weeks).
-Status reflects this repository, not the production programme.
 
-| ID | Priority | Area | Task | Effort | Acceptance criteria | Status |
-|---|---|---|---|---|---|---|
-| AEV-001 | P0 | Security | Tenant + platform page guards and role checks | M | `/admin` redirects non-staff; `/tenant` redirects non-members; tested | **Done** |
-| AEV-002 | P0 | Data | Deterministic seed with 3 tenants, 16 listings, 12 reports | M | `npm run db:seed` rebuilds demo from zero; refuses in production | **Done** |
-| AEV-003 | P0 | Product | Public pages: dealers, compare, pricing, safety, reports index, invite | M | All return 200 and render Khmer/English | **Done** |
-| AEV-004 | P0 | Security | Automated security regression suite | M | 18 tests cover isolation, escalation, suspension, documents, reports, invitations | **Done** |
-| AEV-005 | P0 | Infrastructure | Migrate SQLite → PostgreSQL with RLS | L | Schema parity; RLS policies on tenant tables; security tests run on Postgres; backup/restore rehearsed | Next |
-| AEV-006 | P0 | Security | Shared rate limiter + CSRF review for cookie-auth writes | M | Limits survive multi-instance; state-changing endpoints require same-site origin or token | Next |
-| AEV-007 | P0 | Infrastructure | Object storage for public photos and private documents | M | Presigned uploads; documents bucket private; no app-server file writes | Next |
-| AEV-008 | P0 | Infra | Error tracking, uptime checks, structured logs | S | Report-engine failures alert; no PII in logs | Next |
-| AEV-009 | P0 | Legal | Khmer/English terms, privacy notice, dealer agreement, report disclaimer | M | Counsel-reviewed; linked in footer; versioned acceptance | Next |
-| AEV-010 | P0 | Trust | Dealer verification workflow for business documents | M | Admin can request/review business registration; status visible; audited | Next |
-| AEV-011 | P1 | Notifications | Transactional email (invitations, lead alerts, report ready) | M | Invite link delivered by email; opt-out respected; no secrets in links beyond token | Next |
-| AEV-012 | P1 | Analytics | Consent-safe funnel events and dashboards | M | Search, view, favourite, inquiry, report, payment intent measured; no PII | Next |
-| AEV-013 | P1 | Accessibility | Keyboard, focus, labels, contrast and 200% zoom audit | M | No critical axe violations on search, listing, report, dashboards | Next |
-| AEV-014 | P1 | i18n | Native Khmer copy review and truncation QA | M | 100% keys translated; no clipped text at 360 px | Next |
-| AEV-015 | P1 | Testing | Playwright E2E for three critical journeys | M | Buyer inquiry, dealer publish, admin moderation pass in CI | Next |
-| AEV-016 | P1 | Testing | Report engine unit tests | S | Every status/severity branch covered; no "no accidents" string possible | Next |
-| AEV-017 | P1 | Trust | Report queue + worker with retries and SLA metric | L | Jobs survive restart; failed jobs retried; turnaround dashboard | Later |
-| AEV-018 | P1 | Product | Saved-search alerts (email/in-app) | M | New matching listing triggers one digest; unsubscribe works | Later |
-| AEV-019 | P1 | Billing | Invoice-based subscription management via licensed PSP | L | No card data stored; invoices in USD; VAT treatment confirmed; dunning manual | Later |
-| AEV-020 | P1 | Moderation | Case assignment, SLA timers and escalation | M | Cases have owner, due date, escalation; admin dashboard shows breaches | Later |
-| AEV-021 | P1 | Privacy | Retention and deletion job | M | Documents/reports deleted per policy; audit retained; user export/delete route | Later |
-| AEV-022 | P2 | Product | Featured listing purchase flow | M | Dealer can buy 7-day feature; expiry automatic; receipts | Later |
-| AEV-023 | P2 | Growth | Dealer QR codes and shareable report links | S | QR per storefront; report links require auth for private data | Later |
-| AEV-024 | P2 | SEO | Sitemap, structured data, hreflang, canonical URLs | M | Cars and dealers indexed; Khmer/English alternates; no private pages indexed | Later |
-| AEV-025 | P2 | Performance | Image pipeline (AVIF/WebP, responsive sizes) and Lighthouse CI | M | LCP <2.5 s on 3G; JS budget enforced | Later |
-| AEV-026 | P2 | AI | OCR extraction with human confirmation | L | Extracted fields shown with confidence; no finding verified without human confirm | Blocked by gates |
-| AEV-027 | P2 | Data | Provider adapter interface for lawful history sources | L | Returns `NO_DATA` when unavailable; contract/legal review complete | Blocked |
-| AEV-028 | P2 | Product | Province expansion (Siem Reap, Battambang) | L | Province filters, local dealers, Khmer support hours | Later |
-| AEV-029 | P2 | Ops | Backup/restore drill and incident runbook | S | Restore verified in staging; RTO/RPO documented | Next |
-| AEV-030 | P2 | Research | Pricing experiments (report fee, dealer tiers) | M | E4/E5 run with pre-registered pass/fail; decision memo | Later |
+Rows are in **recommended dependency order**; task IDs are stable references used across the documentation and code comments. Status reflects this repository, not the wider production programme. The same list, with the supporting rationale, appears in [`00-project-plan.md`](00-project-plan.md) §19.
+
+| # | ID | P | Module · layer | Task | Depends on | Effort | Acceptance criteria | Status |
+|---|---|---|---|---|---|---|---|---|
+| 1 | AEV-001 | P0 | Security<br>`src/app/(dash)/**/layout.tsx`, `src/lib/rbac.ts` | Tenant and platform page guards plus shared RBAC helpers | — | M | Non-staff cannot open `/admin`; non-members cannot open `/tenant`; every check is a server-side helper | Done |
+| 2 | AEV-002 | P0 | Data<br>`scripts/seed.ts`, `src/db/schema.ts` | Deterministic demo seed covering 3 tenants, 16 listings, 12 reports, leads and moderation cases | AEV-001 | M | `npm run db:seed` rebuilds the database from zero; production reseed refuses to run | Done |
+| 3 | AEV-003 | P0 | Product<br>`src/app/(site)/**` | Public marketplace pages: home, search, listing, dealers, compare, reports, pricing, safety | AEV-002 | M | All return 200, render in Khmer and English, and pass a link/image crawl | Done |
+| 4 | AEV-004 | P0 | Security<br>`tests/security.test.ts` | Automated security regression suite | AEV-001, AEV-002 | M | 18 tests cover isolation, escalation, suspension, private documents and reports, and invitations | Done |
+| 5 | AEV-005 | P0 | Data infrastructure<br>`src/db/**`, `infra/db` | Migrate SQLite to PostgreSQL with tenant RLS policies and backups | AEV-002, AEV-004 | L | Schema parity; RLS enabled on every tenant table; security suite green on Postgres; restore rehearsed | Next |
+| 6 | AEV-009 | P0 | Legal<br>`src/app/(site)/legal/**`, `docs/04` | Terms, privacy notice, dealer agreement, report disclaimer and versioned acceptance | — | M | Counsel-reviewed copy linked in the footer; acceptance stored with version and timestamp | Next |
+| 7 | AEV-029 | P0 | Operations<br>`infra/runbooks`, `docs/06` | Backup, restore drill and incident runbook | AEV-005 | S | Restore verified in staging; RTO under 4 h and RPO under 24 h documented | Next |
+| 8 | AEV-007 | P0 | Storage<br>`src/app/api/uploads`, `src/lib/storage.ts` | Presigned object storage for public photos and private documents | AEV-005 | M | Uploads go browser→bucket; documents bucket is private; app server stores no files | Next |
+| 9 | AEV-008 | P0 | Observability<br>`src/lib/logger.ts`, `infra/monitoring` | Error tracking, uptime checks and structured logs with PII redaction | AEV-005 | S | Report-engine failures alert within 5 min; logs contain no emails, phones or documents | Next |
+| 10 | AEV-010 | P0 | Trust<br>`src/app/admin/tenants`, `src/app/api/admin` | Dealer verification workflow for business registration documents | AEV-007 | M | Admin can request, review and revoke verification; status is public and audited | Next |
+| 11 | AEV-006 | P0 | Security<br>`src/lib/rate-limit.ts`, `src/middleware.ts` | Shared rate limiter and CSRF/origin review for cookie-authenticated writes | AEV-005 | M | Limits survive multiple instances; every state-changing route rejects cross-site origins | Next |
+| 12 | AEV-016 | P1 | Testing<br>`tests/report-engine.test.ts` | Unit tests for the report engine | AEV-002 | S | Every status and severity branch covered; a test proves "no accidents" cannot be emitted | Next |
+| 13 | AEV-011 | P1 | Notifications<br>`src/lib/notifications.ts`, worker` | Transactional email for invitations, lead alerts and report readiness | AEV-008 | M | Invitation delivered by email; opt-out honoured; no secrets beyond the token in links | Next |
+| 14 | AEV-013 | P1 | Accessibility<br>`src/components/**` | Keyboard, focus, label, contrast and 200% zoom audit | AEV-003 | M | No critical axe violations on search, listing, report and dashboards | Next |
+| 15 | AEV-014 | P1 | Localisation<br>`src/i18n/dictionary.ts` | Native Khmer review and truncation QA | AEV-003 | M | 100% of keys translated; no clipped text at 360 px; Khmer line height verified | Next |
+| 16 | AEV-015 | P1 | Testing<br>`tests/e2e/**` | Playwright end-to-end tests for buyer inquiry, dealer publish and admin moderation | AEV-005, AEV-011 | M | Three journeys pass in CI against a seeded database | Next |
+| 17 | AEV-021 | P1 | Privacy<br>`worker/retention.ts`, `src/app/api/account` | Retention and deletion job plus user export/delete requests | AEV-005, AEV-009 | M | Documents and reports deleted per policy; audit retained; request tracked end to end | Next |
+| 18 | AEV-017 | P1 | Trust<br>`src/lib/reports.ts`, `worker/reports.ts` | Durable report queue and worker with retries and SLA metric | AEV-005, AEV-007, AEV-008 | L | Jobs survive restart; failures retry with backoff; turnaround visible to operations | Next |
+| 19 | AEV-012 | P1 | Analytics<br>`src/lib/analytics.ts`, dashboards` | Consent-safe funnel events and reporting | AEV-009 | M | Search, view, favourite, inquiry, report and payment intent measured without PII | Next |
+| 20 | AEV-020 | P1 | Moderation<br>`src/app/admin/moderation` | Case assignment, SLA timers and escalation | AEV-012 | M | Each case has an owner and due date; breaches surface on the admin dashboard | Next |
+| 21 | AEV-018 | P1 | Product<br>`src/app/api/saved-searches`, worker` | Saved-search alerts by email or in-app digest | AEV-011, AEV-012 | M | A new matching listing triggers one digest; unsubscribe works | Next |
+| 22 | AEV-019 | P1 | Billing<br>`src/lib/billing.ts`, `src/app/api/tenant/subscription` | Invoice-based subscription management through a licensed PSP | AEV-009, AEV-012 | L | No card data stored; invoices in USD; VAT treatment confirmed; dunning is manual | Next |
+| 23 | AEV-022 | P2 | Product<br>`src/app/api/listings/[id]/feature`, billing` | Featured-listing purchase and automatic expiry | AEV-019 | M | Dealer buys seven days of placement; expiry and receipts are automatic | Next |
+| 24 | AEV-023 | P2 | Growth<br>`src/app/(site)/dealers/[slug]` | Dealer QR codes and shareable report links | AEV-003 | S | QR resolves to the storefront; shared report links never expose private documents | Later |
+| 25 | AEV-024 | P2 | SEO<br>`src/app/sitemap.ts`, `robots.ts` | Sitemap, structured data, hreflang and canonical URLs | AEV-003, AEV-014 | M | Cars and dealers indexed; Khmer/English alternates; private pages excluded | Later |
+| 26 | AEV-025 | P2 | Performance<br>`next.config.ts`, `src/components/listing/car-card.tsx` | Responsive image pipeline, AVIF/WebP and Lighthouse CI | AEV-007 | M | LCP under 2.5 s on emulated 3G; JS budget enforced in CI | Later |
+| 27 | AEV-030 | P2 | Research<br>`docs/05` | Pricing experiments for reports, tiers and featured placement | AEV-012, AEV-019 | M | E4/E5 run with pre-registered pass/fail rules; decision memo written | Later |
+| 28 | AEV-028 | P2 | Product<br>`src/app/(site)/cars`, `src/lib/listings.ts` | Province expansion: Siem Reap and Battambang | AEV-024 | L | Province filters, local dealers and Khmer support hours live | Later |
+| 29 | AEV-026 | P2 | AI<br>`src/lib/ai/ocr.ts`, `src/lib/report-engine.ts` | OCR extraction with mandatory human confirmation | AEV-017; gate G2 | L | Extracted fields show confidence; no finding is verified without a reviewer | Blocked |
+| 30 | AEV-027 | P2 | Data<br>`src/lib/providers/**` | Provider adapter interface for lawful history sources | AEV-026; signed contracts | L | Adapter returns `NO_DATA` when unavailable; legal review complete per provider | Blocked |
 
 ### Recommended next sprint (two weeks)
 

@@ -132,6 +132,7 @@ The seed prints a fresh invitation URL (`/invite/<token>`) on every run.
 
 | Document | Contents |
 |---|---|
+| [`docs/00-project-plan.md`](docs/00-project-plan.md) | The consolidated 20-section plan, 30-task backlog and first-week plan |
 | [`docs/01-market-research.md`](docs/01-market-research.md) | Sourced Cambodian market data, assumptions, competitors, open questions |
 | [`docs/02-architecture.md`](docs/02-architecture.md) | Context/container diagrams, auth and report sequences, ERD, threat model |
 | [`docs/03-api-spec.md`](docs/03-api-spec.md) | REST API, envelopes, permissions, examples, error codes |

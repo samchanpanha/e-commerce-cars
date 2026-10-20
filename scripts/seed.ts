@@ -1169,6 +1169,19 @@ async function main() {
     }
   }
 
+  // Curated sample: no requester, so /reports/sample can show a full evidence
+  // ledger without exposing anybody's private report.
+  try {
+    await createReportRequest({
+      vehicleId: vehicleIds.get("prius")!,
+      listingId: listingIds.get("prius")!,
+      requestedById: null,
+      autoProcess: true,
+    });
+  } catch (err) {
+    console.error("Could not generate the sample report", err);
+  }
+
   // ------------------------------------------------------------- marketplace data
   const angkorCx5 = listingIds.get("cx5")!;
   const prius = listingIds.get("prius")!;
@@ -1483,7 +1496,7 @@ async function main() {
     tenants: tenantRows.length,
     vehicles: cars.length,
     listings: listingRows.length,
-    reports: reportTargets.length,
+    reports: reportTargets.length + 1,
   };
   console.log(`Seeded ${JSON.stringify(counts)}`);
   console.log(`Demo password for every account: ${DEMO_PASSWORD}`);

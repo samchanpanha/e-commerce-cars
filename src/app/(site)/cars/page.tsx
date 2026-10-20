@@ -59,7 +59,7 @@ export default async function CarsPage({ searchParams }: { searchParams: Promise
         </div>
         <div className="flex flex-wrap items-center gap-2">
           <SaveSearchButton query={params.toString()} defaultName={[filters.make, filters.model, filters.province, filters.q].filter(Boolean).join(" · ") || "All cars"} />
-          <SortSelect options={sortOptions} label={t("search.sortLabel")} />
+          <SortSelect options={sortOptions} label={t("search.sortLabel")} current={filters.sort} query={params.toString()} />
         </div>
       </div>
 

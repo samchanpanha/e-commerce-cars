@@ -1,16 +1,23 @@
 "use client";
 
-import { usePathname, useSearchParams } from "next/navigation";
+import { useEffect, useState } from "react";
+import { usePathname } from "next/navigation";
 import { Languages } from "lucide-react";
 import { setLocaleAction } from "@/app/actions";
 import type { Lang } from "@/i18n";
 
 export function LocaleSwitcher({ lang, compact = false }: { lang: Lang; compact?: boolean }) {
   const pathname = usePathname();
-  const search = useSearchParams();
-  const qs = search.toString();
-  const next = `${pathname}${qs ? `?${qs}` : ""}`;
   const target: Lang = lang === "en" ? "km" : "en";
+
+  // Keep the current query string on the redirect, but read it after mount.
+  // useSearchParams would force every page using the header into a Suspense
+  // boundary, and its server value can differ from the browser's during
+  // hydration on query-string URLs.
+  const [next, setNext] = useState(pathname);
+  useEffect(() => {
+    setNext(`${pathname}${window.location.search}`);
+  }, [pathname]);
 
   return (
     <form action={setLocaleAction}>

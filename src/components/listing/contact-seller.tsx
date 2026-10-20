@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useEffect, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { CalendarClock, MessageSquare, Send, Tag } from "lucide-react";
 import { clsx } from "clsx";
@@ -25,7 +25,20 @@ export function ContactSeller({
   const [amount, setAmount] = useState(String(Math.round(priceUsd * 0.94)));
   const [state, setState] = useState<"idle" | "sending" | "sent" | "error" | "auth">("idle");
   const [error, setError] = useState<string | null>(null);
+  const [minWhen, setMinWhen] = useState<string | undefined>(undefined);
   const [, startTransition] = useTransition();
+
+  // Never compute this during render: the server and the browser would produce
+  // different minutes, which is a hydration mismatch even though both values
+  // look correct. Setting it after mount also keeps it in the visitor's local
+  // timezone, since <input type="datetime-local"> reads local time.
+  useEffect(() => {
+    const d = new Date(Date.now() + 30 * 60 * 1000);
+    const pad = (n: number) => String(n).padStart(2, "0");
+    setMinWhen(
+      `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`,
+    );
+  }, []);
 
   if (!isAuthed) {
     return (
@@ -133,7 +146,7 @@ export function ContactSeller({
             type="datetime-local"
             className="input"
             value={when}
-            min={new Date().toISOString().slice(0, 16)}
+            min={minWhen}
             onChange={(e) => setWhen(e.target.value)}
             required
           />

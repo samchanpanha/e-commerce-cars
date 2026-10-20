@@ -35,8 +35,12 @@ export const viewport: Viewport = {
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   const lang = await getLang();
   return (
-    <html lang={lang === "km" ? "km" : "en"}>
-      <body>{children}</body>
+    // Browser translation and password managers inject attributes (and sometimes
+    // nodes) before React hydrates. The root element is the one place where that
+    // must not be reported as an application bug; everything below still hydrates
+    // strictly, so real mismatches remain visible.
+    <html lang={lang === "km" ? "km" : "en"} suppressHydrationWarning>
+      <body suppressHydrationWarning>{children}</body>
     </html>
   );
 }

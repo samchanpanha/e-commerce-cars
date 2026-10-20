@@ -101,7 +101,7 @@ Status reflects this repository, not the production programme.
 | ID | Priority | Area | Task | Effort | Acceptance criteria | Status |
 |---|---|---|---|---|---|---|
 | AEV-001 | P0 | Security | Tenant + platform page guards and role checks | M | `/admin` redirects non-staff; `/tenant` redirects non-members; tested | **Done** |
-| AEV-002 | P0 | Data | Deterministic seed with 3 tenants, 16 listings, 11 reports | M | `npm run db:seed` rebuilds demo from zero; refuses in production | **Done** |
+| AEV-002 | P0 | Data | Deterministic seed with 3 tenants, 16 listings, 12 reports | M | `npm run db:seed` rebuilds demo from zero; refuses in production | **Done** |
 | AEV-003 | P0 | Product | Public pages: dealers, compare, pricing, safety, reports index, invite | M | All return 200 and render Khmer/English | **Done** |
 | AEV-004 | P0 | Security | Automated security regression suite | M | 18 tests cover isolation, escalation, suspension, documents, reports, invitations | **Done** |
 | AEV-005 | P0 | Infrastructure | Migrate SQLite → PostgreSQL with RLS | L | Schema parity; RLS policies on tenant tables; security tests run on Postgres; backup/restore rehearsed | Next |

@@ -23,7 +23,7 @@ The sequence follows the product thesis: **a working marketplace first, evidence
 - Drizzle schema with 22 tables, applied via `scripts/init-db.ts`.
 - Session auth (scrypt), RBAC matrix, tenant membership resolution, audit log.
 - Typed i18n dictionary (~1,200 lines of en/km strings), locale switcher.
-- Seed dataset: 3 tenants (one suspended), 9 users, 16 vehicles/listings, 11 reports, conversations, leads, moderation cases, audit entries.
+- Seed dataset: 3 tenants (one suspended), 9 users, 16 vehicles/listings, 12 reports (one public sample), conversations, leads, moderation cases, audit entries.
 - Security regression suite (18 tests) and `tsc --noEmit` clean.
 
 ### Acceptance criteria

@@ -10,6 +10,7 @@ import "./globals.css";
 import { getLang } from "@/i18n";
 
 export const metadata: Metadata = {
+  metadataBase: new URL(process.env.APP_URL ?? "http://localhost:3000"),
   title: {
     default: "AngkorEV — Evidence-first car marketplace for Cambodia",
     template: "%s · AngkorEV",
